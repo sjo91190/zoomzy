@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ring of Fire</title>
+</head>
+<body>
+    {% if card != "END OF DECK" %}
+    <p>{{ name }}'s Turn!</p>
+    <img src={{ url_for('static', filename='/') }}{{ card }} alt="{{ card }}", width=200, height=300>
+    <form method="post">
+        <input type="submit" value="Next">
+    {% else %}
+        <p>END OF DECK</p>
+    {% endif %}
+    </form>
+</body>
+</html>
