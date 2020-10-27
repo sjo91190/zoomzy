@@ -9,6 +9,6 @@ def deck():
 
     for suit in SUIT:
         for rank in RANK:
-            cards.append(rank+suit+".jpg")
+            cards.append(rank+suit)
 
     return cards
