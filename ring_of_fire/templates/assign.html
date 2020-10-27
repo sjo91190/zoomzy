@@ -1,17 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <link rel="stylesheet" href={{ url_for('static', filename='bootstrap/css/bootstrap.css') }}>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
     <title>Assigning Players</title>
 </head>
 <body>
-{% for _ in range(number) %}
-    <form method="post">
-      <input placeholder="Player {{ _ + 1 }}" name="player{{ _ }}" autocomplete="off"><br>
-{% endfor %}
-      <button type="submit">Submit</button>
-    </form>
+<div class="container">
+    <div class="row">
+        <div class="offset-md-5">
+            <div class="form-group">
+                {% for i in range(number) %}
+                <form style="text-align:center" method="post">
+                    <p>Enter Player Names</p>
+                    <input placeholder="Player {{ i + 1 }}" name="player{{ i }}" autocomplete="off">
+                    <br>
+                {% endfor %}
+                    <button class="btn btn-dark btn-block" type="submit">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>
 
 
+
+
+<!--{% for _ in range(number) %}-->
+<!--    <form method="post">-->
+<!--      <input placeholder="Player {{ _ + 1 }}" name="player{{ _ }}" autocomplete="off"><br>-->
+<!--{% endfor %}-->
+<!--      <button type="submit">Submit</button>-->
+<!--    </form>-->
