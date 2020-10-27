@@ -7,7 +7,7 @@
 <body>
     {% if card != "END OF DECK" %}
     <p>{{ name }}'s Turn!</p>
-    <img src={{ url_for('static', filename='/') }}{{ card }} alt="{{ card }}", width=200, height=300>
+    <img src={{ url_for('static', filename='/') }}{{ card }} alt="{{ card }}">
     <form method="post">
         <input type="submit" value="Next">
     {% else %}
