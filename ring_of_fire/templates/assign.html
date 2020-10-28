@@ -10,9 +10,9 @@
     <div class="row">
         <div class="offset-md-5">
             <div class="form-group">
+                <p style="text-align:center">Enter Player Names</p>
                 {% for i in range(number) %}
                 <form style="text-align:center" method="post">
-                    <p>Enter Player Names</p>
                     <input placeholder="Player {{ i + 1 }}" name="player{{ i }}" autocomplete="off">
                     <br>
                 {% endfor %}

@@ -1,42 +1,51 @@
-import sys
-from json import loads
 import random
-from ring_of_fire.deck import deck
-from os import urandom
+from pathlib import Path
+from os import urandom, mkdir
 from waitress import serve
 from paste.translogger import TransLogger
 from flask import Flask, request, render_template, redirect, url_for, session, json
+from ring_of_fire.deck import deck
+from ring_of_fire.dbo import DBOperations
+from ring_of_fire.config import card_actions
 
 app = Flask(__name__)
 app.secret_key = urandom(24)
 
 cards = deck()
+player_config = dict()
+
+path = Path("ring_of_fire", "data")
+if not Path.is_dir(path):
+    mkdir(path)
+
+db_path = Path(path, "players.db")
+player_db = DBOperations(db_path)
 
 
 @app.route("/", methods=['GET', 'POST'])
-def index():
+def home():
     if request.method == "GET":
+
+        player_db.create()
         return render_template("index.html")
 
-    return redirect(url_for("assign_players", count=request.form.get("number")))
+    player_config["COUNT"] = int(request.form.get("number"))
+    return redirect(url_for("assign_players"))
 
 
 @app.route("/assign", methods=['GET', 'POST'])
 def assign_players():
-    all_players = list()
-    number = int(request.args["count"])
+
+    number = int(player_config["COUNT"])
 
     if request.method == "GET":
         return render_template("assign.html", number=number)
 
     if request.method == "POST":
-        for _ in range(number):
-            # all_players[f"player{_}"] = request.form.get(f"player{_}")
-            all_players.append(request.form.get(f"player{_}"))
+        for i in range(number):
+            player_db.insert(player_id=i, name=request.form.get(f"player{i}"))
 
-        player_string = ",".join(all_players)
-
-        return redirect(url_for("play_rof", players=player_string))
+        return redirect(url_for("play_rof", index=0))
 
 
 @app.route("/play", methods=['GET', 'POST'])
@@ -45,14 +54,17 @@ def play_rof():
     if request.method == "GET":
 
         card = random_card()
-        player = request.args["players"].split(",")[0]
-        return render_template("play.html", card=card, name=player)
+
+        player_config["INDEX"] = int(request.args["index"])
+        player = player_db.retrieve(player_config["INDEX"])
+
+        prompt = card_actions(card[0], player[1])
+
+        return render_template("play.html", card=card, name=player[1], prompt=prompt)
 
     return redirect(
         url_for(
-            "play_rof", players=current_player(
-                request.args["players"].split(",")
-            )
+            "play_rof", index=next_player(index=player_config["INDEX"])
         )
     )
 
@@ -68,12 +80,12 @@ def random_card():
     return card
 
 
-def current_player(player_list):
-    new_list = player_list
-    new_list.append(player_list[0])
-    del new_list[0]
+def next_player(index):
+    count = (player_config["COUNT"] - 1)
+    if index < count:
+        return index + 1
 
-    return ",".join(new_list)
+    return 0
 
 
 if __name__ == "__main__":
