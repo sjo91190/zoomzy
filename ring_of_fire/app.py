@@ -3,7 +3,7 @@ from pathlib import Path
 from os import urandom, mkdir
 from waitress import serve
 from paste.translogger import TransLogger
-from flask import Flask, request, render_template, redirect, url_for, session, json
+from flask import Flask, request, render_template, redirect, url_for
 from ring_of_fire.deck import deck
 from ring_of_fire.dbo import DBOperations
 from ring_of_fire.config import card_actions
@@ -43,7 +43,7 @@ def assign_players():
 
     if request.method == "POST":
         for i in range(number):
-            player_db.insert(player_id=i, name=request.form.get(f"player{i}"))
+            player_db.insert_player(player_id=i, name=request.form.get(f"player{i}"))
 
         return redirect(url_for("play_rof", index=0))
 
@@ -56,11 +56,22 @@ def play_rof():
         card = random_card()
 
         player_config["INDEX"] = int(request.args["index"])
-        player = player_db.retrieve(player_config["INDEX"])
+        player = player_db.retrieve_player(player_config["INDEX"])
 
         prompt = card_actions(card[0], player[1])
 
-        return render_template("play.html", card=card, name=player[1], prompt=prompt)
+        players = player_db.all_players()
+        rules = player_db.retrieve_rules()
+
+        if card[0] == "5":
+            player_config["THUMB"] = player[1]
+
+        return render_template("play.html", card=card, name=player[1], prompt=prompt,
+                               players=players, rules=rules, thumb=player_config.get("THUMB"))
+
+    rule = request.form.get("rule")
+    if rule:
+        player_db.insert_rule(player_config["INDEX"], str(rule))
 
     return redirect(
         url_for(

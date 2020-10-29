@@ -16,20 +16,27 @@ class DBOperations:
 
 	def create(self):
 
-		sql_create = """CREATE TABLE IF NOT EXISTS players(
+		sql_create_players = """CREATE TABLE IF NOT EXISTS players(
 		id INTEGER,
 		name VARCHAR)"""
 
-		sql_empty = """DELETE FROM players"""
+		sql_create_rules = """CREATE TABLE IF NOT EXISTS rules(
+		id INTEGER,
+		rule VARCHAR)"""
 
-		sql_reset = """ALTER"""
+		sql_empty_players = """DELETE FROM players"""
+
+		sql_empty_rules = """DELETE FROM rules"""
+
+		actions = [sql_create_players, sql_create_rules, sql_empty_players, sql_empty_rules]
 
 		cur = self.conn.cursor()
-		cur.execute(sql_create)
-		cur.execute(sql_empty)
+		for action in actions:
+			cur.execute(action)
+
 		self.conn.commit()
 
-	def insert(self, player_id, name):
+	def insert_player(self, player_id, name):
 
 		sql_insert = """INSERT INTO players (id, name) VALUES (?, ?)"""
 
@@ -39,7 +46,17 @@ class DBOperations:
 
 		return cur.lastrowid
 
-	def retrieve(self, current_player):
+	def insert_rule(self, player_id, rule):
+
+		sql_insert = """INSERT INTO rules (id, rule) VALUES (?, ?)"""
+
+		cur = self.conn.cursor()
+		cur.execute(sql_insert, [player_id, rule])
+		self.conn.commit()
+
+		return cur.lastrowid
+
+	def retrieve_player(self, current_player):
 
 		cur = self.conn.cursor()
 		sql_select = """SELECT id, name FROM players WHERE players.id = ?"""
@@ -49,5 +66,31 @@ class DBOperations:
 
 		try:
 			return name
+		except IndexError:
+			return "EMPTY DB"
+
+	def all_players(self):
+
+		cur = self.conn.cursor()
+		sql_select = """SELECT name FROM players"""
+		cur.execute(sql_select)
+
+		players = cur.fetchall()
+
+		try:
+			return players
+		except IndexError:
+			return "EMPTY DB"
+
+	def retrieve_rules(self):
+
+		cur = self.conn.cursor()
+		sql_select = """SELECT name, rule FROM players INNER JOIN rules ON rules.id = players.id"""
+		cur.execute(sql_select)
+
+		rules = cur.fetchall()
+
+		try:
+			return rules
 		except IndexError:
 			return "EMPTY DB"

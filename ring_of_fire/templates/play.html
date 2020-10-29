@@ -1,22 +1,54 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <link rel="stylesheet" href={{ url_for('static', filename='bootstrap/css/bootstrap.css') }}>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ring of Fire</title>
+    <title>Ring of Fire!</title>
 </head>
-<body>
-<div class="text-center">
-    {% if card != "END OF DECK" %}
-    <p>{{ name }}'s Turn!</p>
-    <img src={{ url_for('static', filename='/cards/') }}{{ card }}.jpg class="rounded" alt="{{ card }}">
-    <p>{{ prompt }}</p>
-    <form method="post">
-        <input type="submit" value="Next">
-    {% else %}
-        <p>END OF DECK</p>
-    {% endif %}
-    </form>
+<body style="background-color:floralwhite;">
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <div class="card" style="width: 18rem;">
+                <div class="card-header">
+                    <h5 class="card-text text-center">Player Order</h5>
+                </div>
+                <ul class="list-group list-group-flush">
+                    {% for player in players %}
+                    <li class="list-group-item">Player {{ loop.index }}: {{ player[0] }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <div class="col">
+            {% if prompt %}
+            {% include 'in_progress.html' %}
+            {% else %}
+            {% include 'game_over.html' %}
+            {% endif %}
+        </div>
+        <div class="col">
+            <div class="card" style="width: 18rem;">
+                <div class="card-header">
+                    <h5 class="card-text text-center">Custom Rules</h5>
+                </div>
+                {% for item in rules %}
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">{{ item[0] }}: {{ item[1] }}</li>
+                </ul>
+                {% endfor %}
+                <div class="card-header">
+                    <h5 class="card-text text-center">Current Thumb Master</h5>
+                </div>
+                {% if thumb %}
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">{{ thumb }}</li>
+                </ul>
+                {% endif %}
+            </div>
+        </div>
+    </div>
 </div>
 </body>
 </html>

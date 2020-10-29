@@ -1,0 +1,15 @@
+<div class="card" style="width: 18rem;">
+    <div class="card-header">
+        <h5 class="card-text text-center">{{ name }}'s Turn!</h5>
+    </div>
+<div class="card-body">
+    <img src={{ url_for('static', filename='/cards/') }}{{ card }}.jpg class="card-img-top" alt="{{ card }}">
+</div>
+    <p class="card-text">{{ prompt }}</p>
+    <form method="post">
+        {% if card[0] == "K" %}
+        <input class="form-control" placeholder="Enter Custom Rule" name="rule" autocomplete="off">
+        {% endif %}
+        <button class="btn btn-dark btn-block" type="submit">Next</button>
+    </form>
+</div>
