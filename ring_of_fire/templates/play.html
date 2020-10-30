@@ -46,6 +46,14 @@
                     <li class="list-group-item">{{ thumb }}</li>
                 </ul>
                 {% endif %}
+                <div class="card-header">
+                    <h5 class="card-text text-center">Drinking Partners</h5>
+                </div>
+                {% for partner in partners %}
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">{{ partner[0] }} & {{ partner[1] }}</li>
+                </ul>
+                {% endfor %}
             </div>
         </div>
     </div>

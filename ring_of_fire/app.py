@@ -1,17 +1,16 @@
-import random
 from pathlib import Path
-from os import urandom, mkdir
 from waitress import serve
+from os import urandom, mkdir
 from paste.translogger import TransLogger
 from flask import Flask, request, render_template, redirect, url_for
-from ring_of_fire.deck import deck
-from ring_of_fire.dbo import DBOperations
-from ring_of_fire.config import card_actions
+from ring_of_fire.game.dbo import DBOperations
+from ring_of_fire.game.config import card_actions
+from ring_of_fire.game.tools import random_card, shuffle, top_pop, next_player
 
 app = Flask(__name__)
 app.secret_key = urandom(24)
 
-cards = deck()
+cards = list()
 player_config = dict()
 
 path = Path("ring_of_fire", "data")
@@ -19,16 +18,21 @@ if not Path.is_dir(path):
     mkdir(path)
 
 db_path = Path(path, "players.db")
-player_db = DBOperations(db_path)
+db = DBOperations(db_path)
 
 
 @app.route("/", methods=['GET', 'POST'])
 def home():
+    if len(cards) == 0:
+        shuffle(cards)
+
     if request.method == "GET":
 
-        player_db.create()
+        db.create()
         return render_template("index.html")
 
+    player_config["THUMB"] = None
+    player_config["POP"] = 0
     player_config["COUNT"] = int(request.form.get("number"))
     return redirect(url_for("assign_players"))
 
@@ -43,7 +47,7 @@ def assign_players():
 
     if request.method == "POST":
         for i in range(number):
-            player_db.insert_player(player_id=i, name=request.form.get(f"player{i}"))
+            db.insert_player(player_id=i, name=request.form.get(f"player{i}"))
 
         return redirect(url_for("play_rof", index=0))
 
@@ -53,50 +57,40 @@ def play_rof():
 
     if request.method == "GET":
 
-        card = random_card()
+        card = random_card(cards)
 
         player_config["INDEX"] = int(request.args["index"])
-        player = player_db.retrieve_player(player_config["INDEX"])
+        player = db.retrieve_player(player_config["INDEX"])
 
         prompt = card_actions(card[0], player[1])
 
-        players = player_db.all_players()
-        rules = player_db.retrieve_rules()
+        players = db.all_players()
+        rules = db.retrieve_rules()
+        partners = db.retrieve_partners()
+        pop = top_pop(player_config)
 
         if card[0] == "5":
             player_config["THUMB"] = player[1]
 
-        return render_template("play.html", card=card, name=player[1], prompt=prompt,
-                               players=players, rules=rules, thumb=player_config.get("THUMB"))
+        return render_template("play.html", card=card, name=player[1],
+                               prompt=prompt, players=players, rules=rules,
+                               thumb=player_config.get("THUMB"), partners=partners,
+                               pop=pop)
 
     rule = request.form.get("rule")
     if rule:
-        player_db.insert_rule(player_config["INDEX"], str(rule))
+        db.insert_rule(player_config["INDEX"], str(rule))
+
+    partner = request.form.get("partners")
+    if partner:
+        db.insert_partner(player_config["INDEX"], str(partner))
 
     return redirect(
         url_for(
-            "play_rof", index=next_player(index=player_config["INDEX"])
+            "play_rof", index=next_player(index=player_config["INDEX"],
+                                          count=player_config["COUNT"])
         )
     )
-
-
-def random_card():
-
-    if len(cards) == 0:
-        return "END OF DECK"
-
-    card = random.choice(cards)
-    cards.remove(card)
-
-    return card
-
-
-def next_player(index):
-    count = (player_config["COUNT"] - 1)
-    if index < count:
-        return index + 1
-
-    return 0
 
 
 if __name__ == "__main__":
