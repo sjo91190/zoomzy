@@ -1,6 +1,6 @@
 from pathlib import Path
 from waitress import serve
-from os import urandom, mkdir
+from os import urandom, makedirs
 from paste.translogger import TransLogger
 from flask import Flask, request, render_template, redirect, url_for
 from ring_of_fire.game.dbo import DBOperations
@@ -15,7 +15,7 @@ player_config = dict()
 
 path = Path("ring_of_fire", "data")
 if not Path.is_dir(path):
-    mkdir(path)
+    makedirs(path)
 
 db_path = Path(path, "players.db")
 db = DBOperations(db_path)
