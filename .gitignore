@@ -3,3 +3,4 @@ zoom/
 .DS_Store
 __pycache__/
 data/
+notes.txt
