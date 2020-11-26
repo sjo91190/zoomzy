@@ -2,23 +2,25 @@ import random
 from uuid import uuid4
 from json import loads, dumps
 from pathlib import Path
-from os import urandom, makedirs
+from os import urandom, makedirs, path
 from flask import Flask, request, render_template, redirect, url_for
 from j_party.game.dbo import JPartyOperations, PlayerOperations
 
 app = Flask(__name__)
 app.secret_key = urandom(24)
 
-data_path = Path("j_party", "database")
+pkg_root = path.split(__file__)[0]
+
+data_path = Path(pkg_root, "database")
 
 data_db_path = Path(data_path, "jpartydata.db")
 data_db = JPartyOperations(data_db_path)
 
-path = Path("j_party", "data")
-if not Path.is_dir(path):
-    makedirs(path)
+player_path = Path(pkg_root, "data")
+if not Path.is_dir(player_path):
+    makedirs(player_path)
 
-player_db_path = Path(path, "players.db")
+player_db_path = Path(player_path, "players.db")
 player_db = PlayerOperations(player_db_path)
 
 rounds = ["first", "second", "final"]
