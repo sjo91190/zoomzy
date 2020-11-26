@@ -1,6 +1,6 @@
 from pathlib import Path
 from waitress import serve
-from os import urandom, makedirs
+from os import urandom, makedirs, path
 from paste.translogger import TransLogger
 from flask import Flask, request, render_template, redirect, url_for
 from ring_of_fire.game.dbo import DBOperations
@@ -13,11 +13,13 @@ app.secret_key = urandom(24)
 cards = list()
 player_config = dict()
 
-path = Path("ring_of_fire", "data")
-if not Path.is_dir(path):
-    makedirs(path)
+pkg_root = path.split(__file__)[0]
 
-db_path = Path(path, "players.db")
+player_path = Path(pkg_root, "data")
+if not Path.is_dir(player_path):
+    makedirs(player_path)
+
+db_path = Path(player_path, "players.db")
 db = DBOperations(db_path)
 
 
