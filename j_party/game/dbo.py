@@ -1,5 +1,4 @@
 import sqlite3
-from ast import literal_eval
 
 
 class JPartyOperations:
@@ -69,7 +68,14 @@ class PlayerOperations:
 
         sql_empty_dataset = """DELETE FROM dataset"""
 
-        actions = [sql_create_players, sql_empty_players, sql_create_dataset, sql_empty_dataset]
+        sql_create_round = """CREATE TABLE IF NOT EXISTS round(
+        round TEXT)"""
+
+        sql_empty_round = """DELETE FROM round"""
+
+        actions = [sql_create_players, sql_empty_players,
+                   sql_create_dataset, sql_empty_dataset,
+                   sql_create_round, sql_empty_round]
 
         cur = self.conn.cursor()
         for action in actions:
@@ -87,16 +93,6 @@ class PlayerOperations:
 
         return cur.lastrowid
 
-    def insert_game_data(self, game_round, dataset):
-
-        sql_insert = """INSERT INTO dataset (round, data) VALUES (?, ?)"""
-
-        cur = self.conn.cursor()
-        cur.execute(sql_insert, [game_round, dataset])
-        self.conn.commit()
-
-        return cur.lastrowid
-
     def update_score(self, name, score):
 
         sql_update = """UPDATE players SET score=? WHERE name=?"""
@@ -107,7 +103,7 @@ class PlayerOperations:
 
         return cur.lastrowid
 
-    def retrieve_score(self):
+    def retrieve_players(self):
 
         sql_select = """SELECT * FROM players"""
 
@@ -120,6 +116,29 @@ class PlayerOperations:
             return name
         except IndexError:
             return "EMPTY DB"
+
+    def retrieve_player_score(self, player):
+        sql_select = """SELECT score FROM players WHERE name=?"""
+
+        cur = self.conn.cursor()
+        cur.execute(sql_select, [player])
+
+        name = cur.fetchone()
+
+        try:
+            return name[0]
+        except IndexError:
+            return "EMPTY DB"
+
+    def insert_game_data(self, game_round, dataset):
+
+        sql_insert = """INSERT INTO dataset (round, data) VALUES (?, ?)"""
+
+        cur = self.conn.cursor()
+        cur.execute(sql_insert, [game_round, dataset])
+        self.conn.commit()
+
+        return cur.lastrowid
 
     def update_dataset(self, game_round, dataset):
         sql_update = """UPDATE dataset SET data=? WHERE round=?"""
@@ -136,6 +155,39 @@ class PlayerOperations:
 
         cur = self.conn.cursor()
         cur.execute(sql_select, [game_round])
+
+        data = cur.fetchone()
+
+        try:
+            return data[0]
+        except IndexError:
+            return "EMPTY DB"
+
+    def insert_round(self, game_round):
+
+        sql_insert = """INSERT INTO round (round) VALUES (?)"""
+
+        cur = self.conn.cursor()
+        cur.execute(sql_insert, [game_round])
+        self.conn.commit()
+
+        return cur.lastrowid
+
+    def update_round(self, game_round):
+        sql_update = """UPDATE round SET round=?"""
+
+        cur = self.conn.cursor()
+        cur.execute(sql_update, [game_round])
+        self.conn.commit()
+
+        return cur.lastrowid
+
+    def retrieve_round(self):
+
+        sql_select = """SELECT round FROM round"""
+
+        cur = self.conn.cursor()
+        cur.execute(sql_select)
 
         data = cur.fetchone()
 
