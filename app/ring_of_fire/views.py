@@ -6,7 +6,7 @@ from app.ring_of_fire.utils.config import card_actions
 from app.ring_of_fire.utils.tools import random_card, shuffle, top_pop, next_player
 
 from app.ring_of_fire import ring_of_fire
-from app.ring_of_fire.forms import PlayerCountForm
+from app.ring_of_fire.forms import PlayerCountForm, PlayerNameForm
 
 cards = list()
 player_config = dict()
@@ -42,13 +42,17 @@ def home():
 @ring_of_fire.route("/assign", methods=['GET', 'POST'])
 def assign_players():
     number = player_config["COUNT"]
+    players = {f"player{i}": f"Player {i + 1}" for i in range(number)}
+
+    PlayerNameForm.append_class(players)
+    form = PlayerNameForm()
 
     if request.method == "GET":
-        return render_template("ring_of_fire/assign.html", number=number)
+        return render_template("ring_of_fire/assign.html", players=players, form=form)
 
     if request.method == "POST":
         for i in range(number):
-            db.insert_player(player_id=i, name=request.form.get(f"player{i}"))
+            db.insert_player(player_id=i, name=form.data.get(f"player{i}"))
 
         return redirect(url_for("ring_of_fire.play_rof", index=0))
 

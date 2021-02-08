@@ -10,4 +10,11 @@ class PlayerCountForm(FlaskForm):
 
 
 class PlayerNameForm(FlaskForm):
-    pass
+    submit = SubmitField(label="Submit")
+    player1 = None
+
+    @classmethod
+    def append_class(cls, players: dict):
+        for k, v in players.items():
+            setattr(cls, k, StringField(render_kw={"placeholder": v, "autocomplete": "off"}))
+        return cls

@@ -4,3 +4,4 @@ zoom/
 __pycache__/
 data/
 notes.txt
+env.sh

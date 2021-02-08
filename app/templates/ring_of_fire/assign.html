@@ -10,12 +10,12 @@ Ring Of Fire - Assigning Players
         <div class="col-md-auto">
             <div class="form-group">
                 <p style="text-align:center">Enter Player Names</p>
-                {% for i in range(number) %}
                 <form style="text-align:center" method="post">
-                    <input placeholder="Player {{ i + 1 }}" name="player{{ i }}" autocomplete="off">
+                    {% for key in players %}
+                    {{ form|attr(key)() }}
                     <br>
-                {% endfor %}
-                    <button class="btn btn-dark btn-block" type="submit">Submit</button>
+                    {% endfor %}
+                    {{ form.submit }}
                 </form>
             </div>
         </div>
