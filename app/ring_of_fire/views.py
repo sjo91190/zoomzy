@@ -1,14 +1,12 @@
 from pathlib import Path
-from waitress import serve
-from os import urandom, makedirs, path
-from paste.translogger import TransLogger
-from flask import Flask, request, render_template, redirect, url_for
-from ring_of_fire.game.dbo import DBOperations
-from ring_of_fire.game.config import card_actions
-from ring_of_fire.game.tools import random_card, shuffle, top_pop, next_player
+from os import makedirs, path
+from flask import request, render_template, redirect, url_for
+from app.ring_of_fire.utils.dbo import DBOperations
+from app.ring_of_fire.utils.config import card_actions
+from app.ring_of_fire.utils.tools import random_card, shuffle, top_pop, next_player
 
-app = Flask(__name__)
-app.secret_key = urandom(24)
+from app.ring_of_fire import ring_of_fire
+from app.ring_of_fire.forms import PlayerCountForm
 
 cards = list()
 player_config = dict()
@@ -23,41 +21,40 @@ db_path = Path(player_path, "players.db")
 db = DBOperations(db_path)
 
 
-@app.route("/", methods=['GET', 'POST'])
+@ring_of_fire.route("/rof_home", methods=['GET', 'POST'])
 def home():
+    form = PlayerCountForm()
     if len(cards) == 0:
         shuffle(cards)
 
     if request.method == "GET":
-
         db.create()
-        return render_template("index.html")
+        return render_template("ring_of_fire/index.html", form=form)
 
     player_config["THUMB"] = None
     player_config["QUESTION"] = None
     player_config["POP"] = 0
-    player_config["COUNT"] = int(request.form.get("number"))
-    return redirect(url_for("assign_players"))
+    player_config["COUNT"] = int(form.number.data)
+
+    return redirect(url_for("ring_of_fire.assign_players"))
 
 
-@app.route("/assign", methods=['GET', 'POST'])
+@ring_of_fire.route("/assign", methods=['GET', 'POST'])
 def assign_players():
-
-    number = int(player_config["COUNT"])
+    number = player_config["COUNT"]
 
     if request.method == "GET":
-        return render_template("assign.html", number=number)
+        return render_template("ring_of_fire/assign.html", number=number)
 
     if request.method == "POST":
         for i in range(number):
             db.insert_player(player_id=i, name=request.form.get(f"player{i}"))
 
-        return redirect(url_for("play_rof", index=0))
+        return redirect(url_for("ring_of_fire.play_rof", index=0))
 
 
-@app.route("/play", methods=['GET', 'POST'])
+@ring_of_fire.route("/play", methods=['GET', 'POST'])
 def play_rof():
-
     if request.method == "GET":
 
         card = random_card(cards)
@@ -78,7 +75,7 @@ def play_rof():
         if card[0] == "Q":
             player_config["QUESTION"] = player[1]
 
-        return render_template("play.html", card=card, name=player[1],
+        return render_template("ring_of_fire/play.html", card=card, name=player[1],
                                prompt=prompt, players=players, rules=rules,
                                thumb=player_config.get("THUMB"), question=player_config.get("QUESTION"),
                                partners=partners, pop=pop)
@@ -93,13 +90,7 @@ def play_rof():
 
     return redirect(
         url_for(
-            "play_rof", index=next_player(index=player_config["INDEX"],
-                                          count=player_config["COUNT"])
+            "ring_of_fire.play_rof", index=next_player(index=player_config["INDEX"],
+                                                       count=player_config["COUNT"])
         )
     )
-
-
-if __name__ == "__main__":
-    host = "0.0.0.0"
-    port = 8080
-    serve(TransLogger(app), host=host, port=port)

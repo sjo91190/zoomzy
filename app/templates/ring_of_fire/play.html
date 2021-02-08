@@ -1,15 +1,12 @@
+{% extends "base.html" %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <link rel="stylesheet" href={{ url_for('static', filename='bootstrap/css/bootstrap.css') }}>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ring of Fire!</title>
-</head>
-<body style="background-color:floralwhite;">
+{% block title %}Ring Of Fire!{% endblock title %}
+
+{% block content %}
+<br>
 <div class="container">
-    <div class="row">
-        <div class="col">
+    <div class="row justify-content-md-center">
+        <div class="col-md-auto">
             <div class="card" style="width: 18rem;">
                 <div class="card-header">
                     <h5 class="card-text text-center">Player Order</h5>
@@ -21,14 +18,14 @@
                 </ul>
             </div>
         </div>
-        <div class="col">
+        <div class="col-md-auto">
             {% if prompt %}
-            {% include 'in_progress.html' %}
+            {% include 'ring_of_fire/in_progress.html' %}
             {% else %}
-            {% include 'game_over.html' %}
+            {% include 'ring_of_fire/game_over.html' %}
             {% endif %}
         </div>
-        <div class="col">
+        <div class="col-md-auto">
             <div class="card" style="width: 18rem;">
                 <div class="card-header">
                     <h5 class="card-text text-center">Custom Rules</h5>
@@ -66,5 +63,4 @@
         </div>
     </div>
 </div>
-</body>
-</html>
+{% endblock content %}

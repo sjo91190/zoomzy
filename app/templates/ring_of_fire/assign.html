@@ -1,14 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <link rel="stylesheet" href={{ url_for('static', filename='bootstrap/css/bootstrap.css') }}>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title>Assigning Players</title>
-</head>
-<body style="background-color:floralwhite;">
+{% extends "base.html" %}
+
+{% block title %}
+Ring Of Fire - Assigning Players
+{% endblock title %}
+
+{% block content %}
 <div class="container">
-    <div class="row">
-        <div class="offset-md-5">
+    <div class="row justify-content-md-center">
+        <div class="col-md-auto">
             <div class="form-group">
                 <p style="text-align:center">Enter Player Names</p>
                 {% for i in range(number) %}
@@ -22,5 +21,4 @@
         </div>
     </div>
 </div>
-</body>
-</html>
+{% endblock content %}

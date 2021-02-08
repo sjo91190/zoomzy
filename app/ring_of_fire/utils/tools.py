@@ -1,5 +1,5 @@
 import random
-from ring_of_fire.game.deck import deck
+from app.ring_of_fire.utils.deck import deck
 
 
 def shuffle(card_deck):

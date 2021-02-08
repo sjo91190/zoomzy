@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-md-center">
+        <div class="col-md-auto">
+            <div class="form-group">
+                <form style="text-align:center" method="post">
+                    <p>Welcome to Ring of Fire!</p>
+                    <label>How many players?</label>
+                    <br>
+                    {{ form.number(class_="form-control") }}
+                    {{ form.submit(class_="btn btn-dark btn-block") }}
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

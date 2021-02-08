@@ -1,3 +1,5 @@
+<!--Imported by play.html-->
+
 <script>
     function popup(){
         alert("{{ name }}, YOU POPPED THE TOP!\nFINISH YOUR DRINK!!!!");
@@ -10,7 +12,7 @@
         <h5 class="card-text text-center">{{ name }}'s Turn!</h5>
     </div>
 <div class="card-body">
-    <img src={{ url_for('static', filename='/cards/') }}{{ card }}.jpg class="card-img-top" alt="{{ card }}">
+    <img src="{{ url_for('static', filename='ring_of_fire/cards/') }}{{ card }}.jpg" class="card-img-top" alt="{{ card }}">
 </div>
     <p class="card-text">{{ prompt }}</p>
     <form method="post">
