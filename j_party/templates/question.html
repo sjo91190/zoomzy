@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ url_for('static', filename='countdown.css') }}">
+    <title>J-Party!</title>
+  </head>
+  <body style="background-color:floralwhite;">
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <div class="card text-center">
+        <div class="card-body">
+            <h5 class="card-title">{{ question|safe }}</h5>
+            {% if has_wager %}
+            <form style="text-align:center" method="post">
+                <br>
+                {% for player in players %}
+                <input type="hidden" name="player" value="{{ player[0] }}">
+                {{ player[0] }}:
+                <input type="radio" id="correct" name="{{ player[0] }}" value="correct">
+                <label for="correct">Correct</label>
+                <input type="radio" id="incorrect" name="{{ player[0] }}" value="incorrect">
+                <label for="incorrect">Incorrect</label>
+                <br>
+                <br>
+                {% endfor %}
+                <button class="btn btn-primary" type="submit">Submit</button>
+            </form>
+            {% else %}
+            <form style="text-align:center" method="post">
+                <label>Select Player</label>
+                <br>
+                <select name="player">
+                    <option selected disabled>Select Player</option>
+                    {% for player in players %}
+                    <option>{{ player[0] }}</option>
+                    {% endfor %}
+                </select>
+                <br>
+                <button class="btn btn-primary" type="submit" name="status" value="correct">Correct</button>
+                <button class="btn btn-primary" type="submit" name="status" value="incorrect">Incorrect</button>
+            </form>
+            {% endif %}
+            <div class="container py-5">
+                <div class="py-5">
+                    <div class="row">
+                        <div class="col-lg-8 mx-auto">
+                            <div class="rounded bg-gradient-1 text-white shadow p-5 text-center mb-5">
+                                Timer
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+  </body>
+</html>
+
+
+

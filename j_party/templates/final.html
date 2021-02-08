@@ -1,0 +1,48 @@
+{% for data in gamedata %}
+<div class="card text-center" style="width: 30rem;margin:0 auto;">
+    <div class="card-header text-center">
+        CATEGORY
+    </div>
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item">{{ data }}</li>
+    </ul>
+</div>
+
+<br>
+<div class="card text-center" style="width: 30rem;margin:0 auto;">
+    <div class="card-header text-center">
+        Wagers!
+    </div>
+    {% for player in players %}
+    <form style="text-align:center" method="post">
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item">
+            {{ player[0] }}: $
+            <input type="number" min="-9999" max="{{ player[1] }}" name="{{ player[0] }}">
+        </li>
+    </ul>
+    {% endfor %}
+        <input type="hidden" name="final" value="{{ True }}">
+        <input type="hidden" name="id" value="{{ gamedata[data][0]['question_id'] }}">
+        <button class="btn btn-primary btn-block" type="submit">Make Wager</button>
+    </form>
+</div>
+
+
+
+{% endfor %}
+<br>
+<div class="card text-center" style="width: 30rem;margin:0 auto;">
+    <div class="card-header">
+        <h5 class="card-text text-center">Player Score</h5>
+    </div>
+    <ul class="list-group list-group-flush">
+        {% for player in players %}
+        <li class="list-group-item">{{ player[0] }}: ${{ player[1] }}</li>
+        {% endfor %}
+    </ul>
+
+</div>
+
+
+

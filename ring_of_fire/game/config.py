@@ -17,9 +17,9 @@ def card_actions(card, name):
         "1": f"""Categories! {name}, name a category. The next person needs to say a word 
         that fits the category. If you can't deliver, you DRINK!!""",
         "J": "Never Have I Ever! Those that have ever, drink up!",
-        "Q": f"""Questions! {name}, ask another player a question. This player must respond 
-        to the question by asking another player a question. This goes on until someone fails to
-        respond with a question. That person drinks up!""",
+        "Q": f"""Question Master! {name}, until another player pulls this card, you may
+        ask any player a question, and if they don't answer with a question, they drink.
+        If you don't answer their question""",
         "K": f"{name} gets to create a rule that lasts until the game ends!"
     }
 
