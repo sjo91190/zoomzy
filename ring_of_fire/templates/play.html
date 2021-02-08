@@ -47,6 +47,14 @@
                 </ul>
                 {% endif %}
                 <div class="card-header">
+                    <h5 class="card-text text-center">Current Question Master</h5>
+                </div>
+                {% if question %}
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">{{ question }}</li>
+                </ul>
+                {% endif %}
+                <div class="card-header">
                     <h5 class="card-text text-center">Drinking Partners</h5>
                 </div>
                 {% for partner in partners %}
