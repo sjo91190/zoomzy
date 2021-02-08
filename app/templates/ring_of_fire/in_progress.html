@@ -11,21 +11,22 @@
     <div class="card-header">
         <h5 class="card-text text-center">{{ name }}'s Turn!</h5>
     </div>
-<div class="card-body">
-    <img src="{{ url_for('static', filename='ring_of_fire/cards/') }}{{ card }}.jpg" class="card-img-top" alt="{{ card }}">
-</div>
-    <p class="card-text">{{ prompt }}</p>
-    <form method="post">
-        {% if card[0] == "K" %}
-        <input class="form-control" placeholder="Enter Custom Rule" name="rule" autocomplete="off">
-        {% endif %}
-        {% if card[0] == "8" %}
-        <input class="form-control" placeholder="Enter Drinking Partner" name="partners" autocomplete="off">
-        {% endif %}
-        {% if pop %}
-        <button class="btn btn-dark btn-block" type="submit" onclick="popup()">Next</button>
-        {% else %}
-        <button class="btn btn-dark btn-block" type="submit">Next</button>
-        {% endif %}
-    </form>
+    <div class="card-body">
+        <img src="{{ url_for('static', filename='ring_of_fire/cards/') }}{{ card }}.jpg" class="card-img-top" alt="{{ card }}">
+        <p class="card-text">{{ prompt }}</p>
+        <form method="post">
+            {% if card[0] == "K" %}
+            {{ form.custom_rule(class_="form-control") }}
+            {% endif %}
+            {% if card[0] == "8" %}
+            {{ form.drinking_partner(class_="form-control") }}
+            {% endif %}
+            <br>
+            {% if pop %}
+            {{ form.pop_submit(class_="btn btn-dark btn-block") }}
+            {% else %}
+            {{ form.safe_submit(class_="btn btn-dark btn-block") }}
+            {% endif %}
+        </form>
+    </div>
 </div>

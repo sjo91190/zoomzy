@@ -2,11 +2,10 @@ from pathlib import Path
 from os import makedirs, path
 from flask import request, render_template, redirect, url_for
 from app.ring_of_fire.utils.dbo import DBOperations
-from app.ring_of_fire.utils.config import card_actions
+from app.ring_of_fire.utils.actions import card_actions
 from app.ring_of_fire.utils.tools import random_card, shuffle, top_pop, next_player
-
 from app.ring_of_fire import ring_of_fire
-from app.ring_of_fire.forms import PlayerCountForm, PlayerNameForm
+from app.ring_of_fire.forms import PlayerCountForm, PlayerNameForm, CardActionsForm
 
 cards = list()
 player_config = dict()
@@ -59,8 +58,9 @@ def assign_players():
 
 @ring_of_fire.route("/play", methods=['GET', 'POST'])
 def play_rof():
-    if request.method == "GET":
+    form = CardActionsForm()
 
+    if request.method == "GET":
         card = random_card(cards)
 
         player_config["INDEX"] = int(request.args["index"])
@@ -82,13 +82,13 @@ def play_rof():
         return render_template("ring_of_fire/play.html", card=card, name=player[1],
                                prompt=prompt, players=players, rules=rules,
                                thumb=player_config.get("THUMB"), question=player_config.get("QUESTION"),
-                               partners=partners, pop=pop)
+                               partners=partners, pop=pop, form=form)
 
-    rule = request.form.get("rule")
+    rule = form.custom_rule.data
     if rule:
         db.insert_rule(player_config["INDEX"], str(rule))
 
-    partner = request.form.get("partners")
+    partner = form.drinking_partner.data
     if partner:
         db.insert_partner(player_config["INDEX"], str(partner))
 

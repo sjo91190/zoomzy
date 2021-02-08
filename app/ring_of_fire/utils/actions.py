@@ -2,7 +2,7 @@
 
 def card_actions(card, name):
 
-    actions = {
+    _actions = {
         "A": f"Waterfall! everyone drink and don't stop until {name} is finished!",
         "2": f"{name} gets to choose someone to take a drink with",
         "3": f"{name}... drink up, buddy",
@@ -23,4 +23,4 @@ def card_actions(card, name):
         "K": f"{name} gets to create a rule that lasts until the game ends!"
     }
 
-    return actions.get(card)
+    return _actions.get(card)

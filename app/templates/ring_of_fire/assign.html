@@ -12,10 +12,10 @@ Ring Of Fire - Assigning Players
                 <p style="text-align:center">Enter Player Names</p>
                 <form style="text-align:center" method="post">
                     {% for key in players %}
-                    {{ form|attr(key)() }}
-                    <br>
+                    {{ form|attr(key)(class_="form-control") }}
                     {% endfor %}
-                    {{ form.submit }}
+                    <br>
+                    {{ form.submit(class_="btn btn-dark btn-block") }}
                 </form>
             </div>
         </div>
