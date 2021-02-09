@@ -1,0 +1,8 @@
+zoom/
+.idea/
+.DS_Store
+__pycache__/
+data/
+notes.txt
+env.sh
+*.env
