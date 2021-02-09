@@ -3,7 +3,7 @@ from flask_migrate import Migrate
 from app import app_factory, db
 from app.models import ROFPlayers, ROFPartners, ROFRules
 
-app = app_factory(os.getenv("ZOOMZY_CONFIG") or 'default')
+app = app_factory('default')
 migrate = Migrate(app, db)
 
 

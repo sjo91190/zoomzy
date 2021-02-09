@@ -13,7 +13,8 @@ player_config = dict()
 @ring_of_fire.route("/rof_home", methods=['GET', 'POST'])
 def home():
     form = PlayerCountForm()
-    if len(cards) == 0:
+
+    if not cards:
         shuffle(cards)
 
     if request.method == "GET":
@@ -55,29 +56,32 @@ def play_rof():
 
     if request.method == "GET":
         card = random_card(cards)
+        cards_remain = len(cards)
 
         player_config["INDEX"] = int(request.args["index"])
 
         player = ROFPlayers.query.filter_by(player_id=player_config["INDEX"]).first()
-
-        prompt = card_actions(card[0], player.name)
-
         players = ROFPlayers.query.order_by(ROFPlayers.id).all()
         rules = db.session.query(ROFPlayers, ROFRules).filter(ROFRules.player_id == ROFPlayers.player_id).all()
         partners = db.session.query(ROFPlayers, ROFPartners).filter(ROFPartners.player_id == ROFPlayers.player_id).all()
-
         pop = top_pop(player_config)
 
-        if card[0] == "5":
-            player_config["THUMB"] = player.name
+        if card is not None:
+            prompt = card_actions(card[0], player.name)
 
-        if card[0] == "Q":
-            player_config["QUESTION"] = player.name
+            if card[0] == "5":
+                player_config["THUMB"] = player.name
+
+            if card[0] == "Q":
+                player_config["QUESTION"] = player.name
+
+        else:
+            prompt = None
 
         return render_template("ring_of_fire/play.html", card=card, name=player.name,
                                prompt=prompt, players=players, rules=rules,
                                thumb=player_config.get("THUMB"), question=player_config.get("QUESTION"),
-                               partners=partners, pop=pop, form=form)
+                               partners=partners, pop=pop, cards_remain=cards_remain, form=form)
 
     rule = form.custom_rule.data
     if rule:

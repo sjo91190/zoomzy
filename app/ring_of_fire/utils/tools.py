@@ -9,8 +9,8 @@ def shuffle(card_deck):
 
 def random_card(card_deck):
 
-    if len(card_deck) == 0:
-        return "END OF DECK"
+    if not card_deck:
+        return None
 
     card = random.choice(card_deck)
     card_deck.remove(card)

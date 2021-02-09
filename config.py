@@ -13,8 +13,12 @@ class Config:
 
 
 class DevelopmentConfig(Config):
+
+    if not os.path.isdir(ring_of_fire_data):
+        os.makedirs(ring_of_fire_data)
+
     SQLALCHEMY_BINDS = {
-        "ring_of_fire": "sqlite:////" + os.path.join(ring_of_fire_data, "players.db"),
+        "ring_of_fire": "sqlite:///" + os.path.join(ring_of_fire_data, "players.db"),
     }
     DEBUG = True
 
