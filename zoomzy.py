@@ -1,12 +1,14 @@
 import os
-from flask_migrate import Migrate
-from app import app_factory, db
-from app.models import ROFPlayers, ROFPartners, ROFRules
+from waitress import serve
+from paste.translogger import TransLogger
+from app import app_factory
 
-app = app_factory('default')
-migrate = Migrate(app, db)
+if os.environ.get("ZOOMZY_CONFIG") == "prod":
+    if __name__ == "__main__":
+        host = os.environ.get("HOST")
+        port = os.environ.get("PORT")
+        app = app_factory(config_name="prod")
+        serve(TransLogger(app), host=host, port=port)
 
-
-@app.shell_context_processor
-def make_shell_context():
-    return dict(db=db, ROFPlayers=ROFPlayers, ROFPartners=ROFPartners, ROFRules=ROFRules)
+else:
+    app = app_factory(config_name="develop")
