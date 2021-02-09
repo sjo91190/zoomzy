@@ -17,11 +17,12 @@
         <form method="post">
             {% if card[0] == "K" %}
             {{ form.custom_rule(class_="form-control") }}
+            <br>
             {% endif %}
             {% if card[0] == "8" %}
             {{ form.drinking_partner(class_="form-control") }}
-            {% endif %}
             <br>
+            {% endif %}
             {% if pop %}
             {{ form.pop_submit(class_="btn btn-dark btn-block") }}
             {% else %}
