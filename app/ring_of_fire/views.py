@@ -10,7 +10,7 @@ cards = list()
 player_config = dict()
 
 
-@ring_of_fire.route("/rof_home", methods=['GET', 'POST'])
+@ring_of_fire.route("/home", methods=['GET', 'POST'])
 def home():
     form = PlayerCountForm()
 
