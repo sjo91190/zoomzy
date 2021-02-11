@@ -1,0 +1,38 @@
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#J{{ data['question_id'] }}">{{ data['value'] }}</button>
+
+<!-- Modal -->
+<div class="modal fade" id="J{{ data['question_id'] }}" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <input type="hidden" name="id" value="{{ data['question_id'] }}">
+            <input type="hidden" name="value" value="{{ data['value'] }}">
+            <div class="modal-header text-center">
+                <h5 class="modal-title w-100">{{ data['question'] }}</h5>
+            </div>
+            <div class="modal-body text-center">
+                <div class="container">
+                    <div class="justify-content-center">
+                        <div class="btn-group btn-group-toggle"
+                             data-toggle="buttons">
+                            {% for player in players %}
+                                <label class="btn btn-secondary">
+                                    <input type="radio" name="player" value="{{ player[0] }}" required>
+                                    {{ player[0] }}
+                                </label>
+                            {% endfor %}
+                        </div>
+                        <br>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer text-center">
+                <div class="w-100">
+                    <p>{{ data['question_id'] }}</p>
+                    <p>{{ data['value'] }}</p>
+                    {{ form.correct(class="btn btn-primary") }} {{ form.incorrect(class="btn btn-primary") }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

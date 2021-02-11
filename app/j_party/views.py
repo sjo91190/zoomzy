@@ -6,6 +6,7 @@ from os import urandom, makedirs, path
 from flask import Flask, request, render_template, redirect, url_for
 from app.j_party.utils.dbo import JPartyOperations, PlayerOperations
 from app.j_party import j_party
+from app.j_party.forms import CorrectIncorrect
 
 pkg_root = path.split(__file__)[0]
 
@@ -76,96 +77,108 @@ def index():
 
 @j_party.route("/play", methods=['GET', 'POST'])
 def jparty():
+    form = CorrectIncorrect()
     current_round = player_db.retrieve_round()
     details = loads(player_db.retrieve_dataset(current_round))
     players = player_db.retrieve_players()
 
-    next_round = list()
-    for item in details:
-        for active in details[item]:
-            next_round.append(active['active'])
-
-    if True in next_round:
-        round_over = False
-    else:
-        round_over = True
+    # next_round = list()
+    # for item in details:
+    #     for active in details[item]:
+    #         next_round.append(active['active'])
+    #
+    # if True in next_round:
+    #     round_over = False
+    # else:
+    #     round_over = True
 
     if request.method == "GET":
 
         return render_template("j_party/play.html",
+                               form=form,
                                gamedata=details,
                                players=players,
                                current_round=current_round,
-                               round_over=round_over)
+                               round_over=False)
 
-    if round_over and request.method == "POST":
-        if current_round == "first":
-            player_db.update_round("second")
-            return redirect(url_for("j_party.jparty"))
+    # if round_over and request.method == "POST":
+    #     if current_round == "first":
+    #         player_db.update_round("second")
+    #         return redirect(url_for("j_party.jparty"))
+    #
+    #     if current_round == "second":
+    #         player_db.update_round("final")
+    #         return redirect(url_for("j_party.jparty"))
+    #
+    #     if current_round == "final":
+    #         return redirect(url_for("j_party.index"))
+    #
+    # if request.method == "POST" and current_round == "final":
+    #     wagers = dict()
+    #     for player in players:
+    #         wagers[player[0]] = int(request.form.get(player[0]))
 
-        if current_round == "second":
-            player_db.update_round("final")
-            return redirect(url_for("j_party.jparty"))
+        # return redirect(url_for("j_party.question", id=request.form.get('id'), wager=dumps(wagers)))
 
-        if current_round == "final":
-            return redirect(url_for("j_party.index"))
+    # return redirect(url_for("j_party.question", id=request.form.get('id')))
 
-    if request.method == "POST" and current_round == "final":
-        wagers = dict()
-        for player in players:
-            wagers[player[0]] = int(request.form.get(player[0]))
+    status = False
+    if form.correct.data:
+        status = True
 
-        return redirect(url_for("j_party.question", id=request.form.get('id'), wager=dumps(wagers)))
+    value = request.form.get("value").strip("$")
+    question_id = request.form.get("id")
+    print(question_id)
 
-    return redirect(url_for("j_party.question", id=request.form.get('id')))
+    return redirect(url_for("j_party.tally_score", player=request.form.get("player"), status=status, value=value))
 
 
-@j_party.route("/question", methods=['GET', 'POST'])
-def question():
-
-    display_question = None
-    question_points = None
-
-    current_round = player_db.retrieve_round()
-    data = loads(player_db.retrieve_dataset(current_round))
-    players = player_db.retrieve_players()
-    question_id = request.args['id']
-
-    has_wager = False
-    if current_round == "final":
-        has_wager = True
-
-    answer = None
-    for item in data:
-        for sub in data[item]:
-            if sub['question_id'] == question_id:
-                display_question = sub['question']
-                question_points = sub['value'].strip("$")
-                sub['active'] = False
-                player_db.update_dataset(current_round, dumps(data))
-                answer = sub['answer']
-
-    if request.method == "GET":
-        print("\n")
-        print("*--------------------*")
-        print(answer)
-        print("*--------------------*")
-        print("\n")
-        return render_template("j_party/question.html", question=display_question, players=players, has_wager=has_wager)
-
-    if current_round == "first" or current_round == "second":
-        return redirect(url_for("j_party.tally_score",
-                                id=question_id,
-                                status=request.form.get('status'),
-                                player=request.form.get('player'),
-                                value=question_points))
-
-    wager = loads(request.args['wager'])
-    status = dict()
-    for player in players:
-        status[player[0]] = request.form.get(player[0])
-
-    return redirect(url_for("end", wager=dumps(wager), status=dumps(status)))
+# @j_party.route("/question", methods=['GET', 'POST'])
+# def question():
+#
+#     display_question = None
+#     question_points = None
+#
+#     current_round = player_db.retrieve_round()
+#     data = loads(player_db.retrieve_dataset(current_round))
+#     players = player_db.retrieve_players()
+#     question_id = request.args['id']
+#
+#     has_wager = False
+#     if current_round == "final":
+#         has_wager = True
+#
+#     answer = None
+#     for item in data:
+#         for sub in data[item]:
+#             if sub['question_id'] == question_id:
+#                 display_question = sub['question']
+#                 question_points = sub['value'].strip("$")
+#                 sub['active'] = False
+#                 player_db.update_dataset(current_round, dumps(data))
+#                 answer = sub['answer']
+#
+#     if request.method == "GET":
+#         print("\n")
+#         print("*--------------------*")
+#         print(answer)
+#         print("*--------------------*")
+#         print("\n")
+#         return render_template("j_party/question.html", question=display_question, players=players, has_wager=has_wager)
+#
+#     if current_round == "first" or current_round == "second":
+#         return redirect(url_for("j_party.tally_score",
+#                                 id=question_id,
+#                                 status=request.form.get('status'),
+#                                 player=request.form.get('player'),
+#                                 value=question_points))
+#
+#     wager = loads(request.args['wager'])
+#     status = dict()
+#     for player in players:
+#         status[player[0]] = request.form.get(player[0])
+#
+#     return redirect(url_for("end", wager=dumps(wager), status=dumps(status)))
 
 
 @j_party.route("/tally", methods=['GET'])
@@ -177,14 +190,14 @@ def tally_score():
 
     score = int(player_db.retrieve_player_score(player))
 
-    if status == "correct":
+    if status == "True":
         score += value
     else:
         score -= value
 
     player_db.update_score(name=player, score=score)
 
-    if status == "correct":
+    if status == "True":
         return redirect(url_for("j_party.jparty"))
 
     return redirect(url_for("j_party.question", id=request.args['id']))
