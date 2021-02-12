@@ -1,10 +1,13 @@
 <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary" data-toggle="modal"
-        data-target="#J{{ data['question_id'] }}">{{ data['value'] }}</button>
+{#{{ answer(category, data['value'], data['answer']) }}#}
+{#<button type="button" class="btn btn-primary" data-toggle="modal"#}
+{#        data-target="#J{{ data['question_id'] }}">{{ data['value'] }}</button>#}
 
 <!-- Modal -->
+<form method="post">
 <div class="modal" id="J{{ data['question_id'] }}" data-backdrop="static" data-keyboard="false" tabindex="-1"
      aria-labelledby="staticBackdropLabel" aria-hidden="true">
+
     <div class="modal-dialog">
         <div class="modal-content">
             <input type="hidden" name="id" value="{{ data['question_id'] }}">
@@ -39,3 +42,4 @@
         </div>
     </div>
 </div>
+</form>

@@ -2,8 +2,8 @@ import random
 from uuid import uuid4
 from json import loads, dumps
 from pathlib import Path
-from os import urandom, makedirs, path
-from flask import Flask, request, render_template, redirect, url_for
+from os import makedirs, path
+from flask import request, render_template, redirect, url_for
 from app.j_party.utils.dbo import JPartyOperations, PlayerOperations
 from app.j_party import j_party
 from app.j_party.forms import CorrectIncorrect
@@ -23,6 +23,15 @@ player_db_path = Path(player_path, "players.db")
 player_db = PlayerOperations(player_db_path)
 
 rounds = ["first", "second", "final"]
+
+
+@j_party.context_processor
+def utility_functions():
+    def print_in_console(category, value, answer):
+        print(category, value, answer)
+        return ""
+
+    return dict(answer=print_in_console)
 
 
 def play_set():
@@ -125,24 +134,59 @@ def jparty():
             player_db.update_round("final")
             return redirect(url_for("j_party.jparty"))
 
-    if current_round == "first" or current_round == "second" and request.method == "POST":
-        value = request.form.get("value").strip("$")
+    if current_round in ["first", "second"] and request.method == "POST":
+
         question_id = request.form.get("id")
-
+        value = None
         status = False
-        if form.correct.data:
-            status = True
-            for category in details:
-                for sub in details[category]:
-                    if sub['question_id'] == question_id:
-                        sub['active'] = False
-                        player_db.update_dataset(current_round, dumps(details))
+        if request.form.get("value"):
+            value = request.form.get("value").strip("$")
 
-        return redirect(url_for("j_party.tally_score",
-                                player=request.form.get("player"),
-                                status=status,
-                                value=value,
-                                id=question_id))
+        for category in details:
+            for sub in details[category]:
+                if sub['question_id'] == question_id:
+                    answer = sub['answer']
+                    if form.correct.data or form.incorrect.data:
+                        if form.correct.data:
+                            status = True
+                            sub['active'] = False
+                            player_db.update_dataset(current_round, dumps(details))
+                        return redirect(url_for("j_party.tally_score",
+                                                player=request.form.get("player"),
+                                                status=status,
+                                                value=value,
+                                                id=question_id))
+                    print(answer)
+                    return redirect(url_for("j_party.jparty", id=question_id, reload=True))
+
+        # if request.form.get("loadme"):
+        #     q_id = request.form.get("loadme")
+        #     answer = None
+        #     for cat in details:
+        #         for sub in details[cat]:
+        #             if sub['question_id'] == q_id:
+        #                 answer = sub['answer']
+        #
+        #     print(answer)
+        #     return redirect(url_for("j_party.jparty", id=q_id, reload=True))
+        #
+        # value = request.form.get("value").strip("$")
+        # question_id = request.form.get("id")
+        #
+        # status = False
+        # if form.correct.data:
+        #     status = True
+        #     for category in details:
+        #         for sub in details[category]:
+        #             if sub['question_id'] == question_id:
+        #                 sub['active'] = False
+        #                 player_db.update_dataset(current_round, dumps(details))
+
+        # return redirect(url_for("j_party.tally_score",
+        #                         player=request.form.get("player"),
+        #                         status=status,
+        #                         value=value,
+        #                         id=question_id))
 
     if current_round == "final" and request.method == "POST":
         wager = dict()
