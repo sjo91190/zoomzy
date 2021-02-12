@@ -1,6 +1,7 @@
-{%  extends "base.html" %}
+{% extends "base.html" %}
 
 {% block content %}
+
     {% if current_round == "first" %}
         <h5 class="text-center">First Round!</h5>
     {% elif current_round == "second" %}
@@ -15,3 +16,16 @@
         {% include 'j_party/final.html' %}
     {% endif %}
 {% endblock content %}
+
+{% block script %}
+    {% if reload %}
+        {{ super() }}
+        <script type="text/javascript">
+            $(window).on('load', function () {
+                $('#{{ id }}').modal('show');
+            });
+        </script>
+    {% else %}
+        {{ super() }}
+    {% endif %}
+{% endblock script %}

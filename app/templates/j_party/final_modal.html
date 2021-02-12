@@ -1,0 +1,34 @@
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary btn-block" data-toggle="modal"
+        data-target="#Final">Make Wager
+</button>
+
+<!-- Modal -->
+<div class="modal" id="Final" data-backdrop="static" data-keyboard="false" tabindex="-1"
+     aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header text-center">
+                <h5 class="modal-title w-100">{{ gamedata[data][0]['question']|safe }}</h5>
+            </div>
+            <div class="modal-body text-center">
+                {% for player in players %}
+                    <input type="hidden" name="player" value="{{ player[0] }}">
+                    {{ player[0] }}:
+                    <input type="radio" id="correct" name="STATUS_{{ player[0] }}" value="correct">
+                    <label for="correct">Correct</label>
+                    <input type="radio" id="incorrect" name="STATUS_{{ player[0] }}" value="incorrect">
+                    <label for="incorrect">Incorrect</label>
+                    <br>
+                    <br>
+                {% endfor %}
+            </div>
+            <div class="modal-footer text-center">
+                <div class="w-100">
+                    <button class="btn btn-primary" type="submit">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

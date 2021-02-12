@@ -17,13 +17,11 @@
             <ul class="list-group list-group-flush">
                 <li class="list-group-item">
                     {{ player[0] }}: $
-                    <input type="number" min="-9999" max="{{ player[1] }}" name="{{ player[0] }}">
+                    <input type="number" min="-9999" max="{{ player[1] }}" name="WAGER_{{ player[0] }}">
                 </li>
             </ul>
         {% endfor %}
-        <input type="hidden" name="final" value="{{ True }}">
-        <input type="hidden" name="id" value="{{ gamedata[data][0]['question_id'] }}">
-        <button class="btn btn-primary btn-block" type="submit">Make Wager</button>
+    {% include "j_party/final_modal.html" %}
         </form>
     </div>
 {% endfor %}
