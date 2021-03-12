@@ -12,9 +12,9 @@ J-Party! - Assigning Players
                 <p style="text-align:center">Enter Player Names</p>
                 {% for i in range(3) %}
                 <form style="text-align:center" method="post">
-                    <input placeholder="Player {{ i + 1 }}" name="player{{ i }}" autocomplete="off">
-                    <br>
+                    <input class="form-control" placeholder="Player {{ i + 1 }}" name="player{{ i }}" autocomplete="off">
                 {% endfor %}
+                    <br>
                     <button class="btn btn-primary btn-block" type="submit">Submit</button>
                 </form>
             </div>

@@ -1,8 +1,3 @@
-<!-- Button trigger modal -->
-{#{{ answer(category, data['value'], data['answer']) }}#}
-{#<button type="button" class="btn btn-primary" data-toggle="modal"#}
-{#        data-target="#J{{ data['question_id'] }}">{{ data['value'] }}</button>#}
-
 <!-- Modal -->
 <form method="post">
 <div class="modal" id="J{{ data['question_id'] }}" data-backdrop="static" data-keyboard="false" tabindex="-1"
@@ -36,7 +31,12 @@
             </div>
             <div class="modal-footer text-center">
                 <div class="w-100">
-                    {{ form.correct(class="btn btn-primary") }} {{ form.incorrect(class="btn btn-primary") }}
+                    {{ form.correct(class="btn btn-outline-primary") }} {{ form.incorrect(class="btn btn-outline-primary") }}
+                </div>
+            </div>
+            <div class="modal-footer text-center">
+                <div class="w-100">
+                    {{ form.times_up(class="btn btn-outline-danger") }}
                 </div>
             </div>
         </div>

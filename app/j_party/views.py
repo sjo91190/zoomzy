@@ -146,49 +146,29 @@ def jparty():
             for sub in details[category]:
                 if sub['question_id'] == question_id:
                     answer = sub['answer']
+
+                    if form.times_up.data:
+                        sub['active'] = False
+                        player_db.update_dataset(current_round, dumps(details))
+                        return redirect(url_for("j_party.jparty"))
+
                     if form.correct.data or form.incorrect.data:
                         if form.correct.data:
                             status = True
                             sub['active'] = False
                             player_db.update_dataset(current_round, dumps(details))
+
                         return redirect(url_for("j_party.tally_score",
                                                 player=request.form.get("player"),
                                                 status=status,
                                                 value=value,
                                                 id=question_id))
+
                     print(f"""****************************
         {answer}
 ****************************""")
+
                     return redirect(url_for("j_party.jparty", id=question_id, reload=True))
-
-        # if request.form.get("loadme"):
-        #     q_id = request.form.get("loadme")
-        #     answer = None
-        #     for cat in details:
-        #         for sub in details[cat]:
-        #             if sub['question_id'] == q_id:
-        #                 answer = sub['answer']
-        #
-        #     print(answer)
-        #     return redirect(url_for("j_party.jparty", id=q_id, reload=True))
-        #
-        # value = request.form.get("value").strip("$")
-        # question_id = request.form.get("id")
-        #
-        # status = False
-        # if form.correct.data:
-        #     status = True
-        #     for category in details:
-        #         for sub in details[category]:
-        #             if sub['question_id'] == question_id:
-        #                 sub['active'] = False
-        #                 player_db.update_dataset(current_round, dumps(details))
-
-        # return redirect(url_for("j_party.tally_score",
-        #                         player=request.form.get("player"),
-        #                         status=status,
-        #                         value=value,
-        #                         id=question_id))
 
     if current_round == "final" and request.method == "POST":
         wager = dict()
