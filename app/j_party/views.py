@@ -156,7 +156,9 @@ def jparty():
                                                 status=status,
                                                 value=value,
                                                 id=question_id))
-                    print(answer)
+                    print(f"""****************************
+        {answer}
+****************************""")
                     return redirect(url_for("j_party.jparty", id=question_id, reload=True))
 
         # if request.form.get("loadme"):

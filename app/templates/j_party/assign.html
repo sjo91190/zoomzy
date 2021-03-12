@@ -1,9 +1,13 @@
 {% extends "base.html" %}
 
+{% block title %}
+J-Party! - Assigning Players
+{% endblock title %}
+
 {%  block content %}
 <div class="container">
-    <div class="row">
-        <div class="offset-md-5">
+    <div class="row justify-content-md-center">
+        <div class="col-md-auto">
             <div class="form-group">
                 <p style="text-align:center">Enter Player Names</p>
                 {% for i in range(3) %}
