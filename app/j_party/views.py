@@ -25,15 +25,6 @@ player_db = PlayerOperations(player_db_path)
 rounds = ["first", "second", "final"]
 
 
-@j_party.context_processor
-def utility_functions():
-    def print_in_console(category, value, answer):
-        print(category, value, answer)
-        return ""
-
-    return dict(answer=print_in_console)
-
-
 def play_set():
     show_num = data_db.show_numbers()
     _set = random.choice(show_num)
@@ -55,7 +46,7 @@ def play_set():
                                            question=data['question'],
                                            answer=data['answer'],
                                            question_id=str(uuid4()),
-                                           active=True))
+                                           active=False))
 
             if _round == "first" or _round == "second":
                 game[cat] = sorted(_game[cat], key=lambda v: int(v['value'].strip("$").replace(",", "")))
@@ -165,7 +156,8 @@ def jparty():
                                                 id=question_id))
 
                     print(f"""****************************
-        {answer}
+{answer}
+
 ****************************""")
 
                     return redirect(url_for("j_party.jparty", id=question_id, reload=True))
@@ -173,6 +165,13 @@ def jparty():
     if current_round == "final" and request.method == "POST":
         wager = dict()
         status = dict()
+        for item in details:
+            item = details[item][0]
+            print(f"""****************************
+             
+{item.get("answer")}
+
+****************************""")
         for player in players:
             wager[player[0]] = int(request.form.get(f"WAGER_{player[0]}"))
             status[player[0]] = request.form.get(f"STATUS_{player[0]}")
