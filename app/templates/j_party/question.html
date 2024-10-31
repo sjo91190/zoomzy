@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="card text-center">
+        <div class="card-body">
+            <h5 class="card-title">{{ question|safe }}</h5>
+            {% if has_wager %}
+                <form style="text-align:center" method="post">
+                    <br>
+                    {% for player in players %}
+                        <input type="hidden" name="player" value="{{ player[0] }}">
+                        {{ player[0] }}:
+                        <input type="radio" id="correct" name="{{ player[0] }}" value="correct">
+                        <label for="correct">Correct</label>
+                        <input type="radio" id="incorrect" name="{{ player[0] }}" value="incorrect">
+                        <label for="incorrect">Incorrect</label>
+                        <br>
+                        <br>
+                    {% endfor %}
+                    <button class="btn btn-primary" type="submit">Submit</button>
+                </form>
+            {% else %}
+                <form style="text-align:center" method="post">
+                    <label>Select Player</label>
+                    <br>
+                    <select name="player">
+                        <option selected disabled>Select Player</option>
+                        {% for player in players %}
+                            <option>{{ player[0] }}</option>
+                        {% endfor %}
+                    </select>
+                    <br>
+                    <button class="btn btn-primary" type="submit" name="status" value="correct">Correct</button>
+                    <button class="btn btn-primary" type="submit" name="status" value="incorrect">Incorrect</button>
+                </form>
+            {% endif %}
+        </div>
+    </div>
+{% endblock content %}
+
+
+

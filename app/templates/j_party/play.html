@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}J-Party!{% endblock title %}
+
+{% block content %}
+
+    {% if current_round == "first" %}
+        <h5 class="text-center">First Round!</h5>
+    {% elif current_round == "second" %}
+        <h5 class="text-center">Second Round!</h5>
+    {% else %}
+        <h5 class="text-center">Final Round!</h5>
+    {% endif %}
+
+    {% if current_round != "final" %}
+        {% include 'j_party/rounds.html' %}
+    {% else %}
+        {% include 'j_party/final.html' %}
+    {% endif %}
+{% endblock content %}
+
+{% block script %}
+    {% if reload %}
+        {{ super() }}
+        <script type="text/javascript">
+            $(window).on('load', function () {
+                $('#{{ id }}').modal('show');
+            });
+        </script>
+    {% else %}
+        {{ super() }}
+    {% endif %}
+{% endblock script %}

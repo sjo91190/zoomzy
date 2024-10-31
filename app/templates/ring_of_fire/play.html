@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}Ring Of Fire!{% endblock title %}
+
+{% block content %}
+<br>
+<div class="container">
+    <div class="row justify-content-md-center">
+        <div class="col-md-auto">
+            <div class="card" style="width: 18rem;">
+                <div class="card-header">
+                    <h5 class="card-text text-center">Player Order</h5>
+                </div>
+                <ul class="list-group list-group-flush">
+                    {% for player in players %}
+                    <li class="list-group-item">Player {{ loop.index }}: {{ player.name }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-auto">
+            {% if prompt %}
+            {% include 'ring_of_fire/in_progress.html' %}
+            {% else %}
+            {% include 'ring_of_fire/game_over.html' %}
+            {% endif %}
+        </div>
+        <div class="col-md-auto">
+            <div class="card" style="width: 18rem;">
+                <div class="card-header">
+                    <h5 class="card-text text-center">Custom Rules</h5>
+                </div>
+                {% for item in rules %}
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">{{ item[0].name }}: {{ item[1].rule }}</li>
+                </ul>
+                {% endfor %}
+                <div class="card-header">
+                    <h5 class="card-text text-center">Current Thumb Master</h5>
+                </div>
+                {% if thumb %}
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">{{ thumb }}</li>
+                </ul>
+                {% endif %}
+                <div class="card-header">
+                    <h5 class="card-text text-center">Current Question Master</h5>
+                </div>
+                {% if question %}
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">{{ question }}</li>
+                </ul>
+                {% endif %}
+                <div class="card-header">
+                    <h5 class="card-text text-center">Drinking Partners</h5>
+                </div>
+                {% for partner in partners %}
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">{{ partner[0].name }} & {{ partner[1].partner }}</li>
+                </ul>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

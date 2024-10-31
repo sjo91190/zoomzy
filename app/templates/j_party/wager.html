@@ -1,0 +1,11 @@
+{% for player in players %}
+    <input type="hidden" name="player" value="{{ player[0] }}">
+    {{ player[0] }}:
+    <input type="radio" id="correct" name="{{ player[0] }}" value="correct">
+    <label for="correct">Correct</label>
+    <input type="radio" id="incorrect" name="{{ player[0] }}" value="incorrect">
+    <label for="incorrect">Incorrect</label>
+    <br>
+    <br>
+{% endfor %}
+<button class="btn btn-primary" type="submit">Submit</button>

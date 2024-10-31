@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}
+Ring Of Fire - Assigning Players
+{% endblock title %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-md-center">
+        <div class="col-md-auto">
+            <div class="form-group">
+                <p style="text-align:center">Enter Player Names</p>
+                <form style="text-align:center" method="post">
+                    {% for key in players %}
+                    {{ form|attr(key)(class_="form-control") }}
+                    {% endfor %}
+                    <br>
+                    {{ form.submit(class_="btn btn-dark btn-block") }}
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

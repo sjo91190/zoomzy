@@ -1,0 +1,34 @@
+<!--Imported by play.html-->
+
+<script>
+    function popup(){
+        alert("{{ name }}, YOU POPPED THE TOP!\nFINISH YOUR DRINK!!!!");
+        }
+</script>
+
+
+<div class="card" style="width: 18rem;">
+    <div class="card-header">
+        <h5 class="card-text text-center">{{ name }}'s Turn!</h5>
+        <h6 class="card-text text-center">[{{ cards_remain + 1 }} Cards Remaining]</h6>
+    </div>
+    <div class="card-body">
+        <img src="{{ url_for('static', filename='ring_of_fire/cards/') }}{{ card }}.jpg" class="card-img-top" alt="{{ card }}">
+        <p class="card-text">{{ prompt }}</p>
+        <form method="post">
+            {% if card[0] == "K" %}
+            {{ form.custom_rule(class_="form-control") }}
+            <br>
+            {% endif %}
+            {% if card[0] == "8" %}
+            {{ form.drinking_partner(class_="form-control") }}
+            <br>
+            {% endif %}
+            {% if pop %}
+            {{ form.pop_submit(class_="btn btn-dark btn-block") }}
+            {% else %}
+            {{ form.safe_submit(class_="btn btn-dark btn-block") }}
+            {% endif %}
+        </form>
+    </div>
+</div>

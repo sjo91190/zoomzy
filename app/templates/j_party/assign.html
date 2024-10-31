@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}
+J-Party! - Assigning Players
+{% endblock title %}
+
+{%  block content %}
+<div class="container">
+    <div class="row justify-content-md-center">
+        <div class="col-md-auto">
+            <div class="form-group">
+                <p style="text-align:center">Enter Player Names</p>
+                {% for i in range(3) %}
+                <form style="text-align:center" method="post">
+                    <input class="form-control" placeholder="Player {{ i + 1 }}" name="player{{ i }}" autocomplete="off">
+                {% endfor %}
+                    <br>
+                    <button class="btn btn-primary btn-block" type="submit">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
