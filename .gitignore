@@ -6,3 +6,4 @@ data/
 notes.txt
 env.sh
 *.env
+venv/
